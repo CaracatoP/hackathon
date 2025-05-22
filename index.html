@@ -1,113 +1,145 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EducaAI</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="login-container">
-        <div class="logo-area">
-            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                <circle cx="30" cy="30" r="28" fill="#009739" stroke="#FEDF00" stroke-width="4"/>
-                <ellipse cx="30" cy="38" rx="18" ry="8" fill="#FEDF00" opacity="0.7"/>
-                <circle cx="30" cy="26" r="13" fill="#fff"/>
-                <circle cx="25" cy="24" r="2.5" fill="#009739"/>
-                <circle cx="35" cy="24" r="2.5" fill="#009739"/>
-                <rect x="26" y="32" width="8" height="3" rx="1.5" fill="#009739"/>
-            </svg>
-            <span class="logo-text">EducaAI</span>
-        </div>
-        <h2>Bem-vindo ao EducaAI</h2>
-        <form id="login-form" autocomplete="off">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Senha" required>
-            <select id="login-type" required>
-                <option value="aluno">Aluno</option>
-                <option value="professor">Professor</option>
-            </select>
-            <button type="submit">Entrar</button>
-            <button type="button" id="forgot-password-btn" class="link-btn">Esqueceu sua senha?</button>
-        </form>
-        <p id="login-error" class="error"></p>
-    </div>
-
-    <div id="main-app" style="display:none;">
-        <header>
-            <div class="logo-area-header">
-                <svg width="40" height="40" viewBox="0 0 60 60" fill="none">
-                    <circle cx="30" cy="30" r="28" fill="#009739" stroke="#FEDF00" stroke-width="4"/>
-                    <ellipse cx="30" cy="38" rx="18" ry="8" fill="#FEDF00" opacity="0.7"/>
-                    <circle cx="30" cy="26" r="13" fill="#fff"/>
-                    <circle cx="25" cy="24" r="2.5" fill="#009739"/>
-                    <circle cx="35" cy="24" r="2.5" fill="#009739"/>
-                    <rect x="26" y="32" width="8" height="3" rx="1.5" fill="#009739"/>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EducaAI</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="login-container">
+            <div class="logo-area">
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                    <circle cx="30" cy="30" r="28" fill="#009739"
+                        stroke="#FEDF00" stroke-width="4" />
+                    <ellipse cx="30" cy="38" rx="18" ry="8" fill="#FEDF00"
+                        opacity="0.7" />
+                    <circle cx="30" cy="26" r="13" fill="#fff" />
+                    <circle cx="25" cy="24" r="2.5" fill="#009739" />
+                    <circle cx="35" cy="24" r="2.5" fill="#009739" />
+                    <rect x="26" y="32" width="8" height="3" rx="1.5"
+                        fill="#009739" />
                 </svg>
-                <span class="logo-text-header">EducaAI</span>
+                <span class="logo-text">EducaAI</span>
             </div>
-            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">&#9776;</button>
-            <nav id="main-nav">
-                <ul class="main-menu" id="main-menu">
-                    <li><button class="nav-btn" data-tab="profile">Perfil</button></li>
-                    <li><button class="nav-btn" data-tab="activities">Atividades</button></li>
-                    <li><button class="nav-btn" data-tab="ai">Assistente IA</button></li>
-                    <li><button class="nav-btn" data-tab="leaderboard">Ranking</button></li>
-                    <li><button id="logout-btn">Sair</button></li>
-                </ul>
-            </nav>
-        </header>
-        <main>
-            <section id="user-greeting"></section>
-            <section id="profile-section" class="tab-section">
-                <h2>Perfil</h2>
-                <ul id="profile-info">
-                    <li><strong>Nome:</strong> <span id="profile-name">Visitante</span></li>
-                    <li><strong>Pontos:</strong> <span id="profile-points">0</span></li>
-                    <li><strong>Nível:</strong> <span id="profile-level">1</span></li>
-                    <li><strong>Tipo:</strong> <span id="profile-type">Aluno</span></li>
-                    <li>
-                        <strong>Dificuldade:</strong>
-                        <div class="difficulty-group">
-                            <button class="difficulty-btn active" data-diff="facil" id="btn-diff-facil">Fácil</button>
-                            <button class="difficulty-btn" data-diff="medio" id="btn-diff-medio">Médio</button>
-                            <button class="difficulty-btn" data-diff="dificil" id="btn-diff-dificil">Difícil</button>
-                        </div>
-                    </li>
-                </ul>
-            </section>
-            <section id="activity-section" class="tab-section">
-                <h2>Atividades</h2>
-                <label for="subject-select">Matéria:</label>
-                <select id="subject-select">
-                    <option value="matematica">Matemática</option>
-                    <option value="portugues">Português</option>
-                    <option value="ingles">Inglês</option>
-                    <option value="geografia">Geografia</option>
-                    <option value="historia">História</option>
+            <h2>Bem-vindo ao EducaAI</h2>
+            <form id="login-form" autocomplete="off">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Senha"
+                    required>
+                <select id="login-type" required>
+                    <option value="aluno">Aluno</option>
+                    <option value="professor">Professor</option>
                 </select>
-                <div id="activities-list"></div>
-                <div id="answer-section" style="display:none;">
-                    <input type="text" id="activity-answer" placeholder="Sua resposta...">
-                    <button id="submit-answer-btn">Responder</button>
-                    <span id="answer-feedback"></span>
-                    <div id="activity-tip"></div>
+                <button type="submit">Entrar</button>
+                <button type="button" id="forgot-password-btn"
+                    class="link-btn">Esqueceu sua senha?</button>
+            </form>
+            <p id="login-error" class="error"></p>
+        </div>
+
+        <!-- Tela de saudação centralizada -->
+        <div id="welcome-screen" style="display:none;">
+            <div class="welcome-msg-box">
+                <span id="welcome-msg" class="greeting-msg"></span>
+            </div>
+        </div>
+
+        <div id="main-app" style="display:none;">
+            <header>
+                <div class="logo-area-header">
+                    <svg width="40" height="40" viewBox="0 0 60 60" fill="none">
+                        <circle cx="30" cy="30" r="28" fill="#009739"
+                            stroke="#FEDF00" stroke-width="4" />
+                        <ellipse cx="30" cy="38" rx="18" ry="8" fill="#FEDF00"
+                            opacity="0.7" />
+                        <circle cx="30" cy="26" r="13" fill="#fff" />
+                        <circle cx="25" cy="24" r="2.5" fill="#009739" />
+                        <circle cx="35" cy="24" r="2.5" fill="#009739" />
+                        <rect x="26" y="32" width="8" height="3" rx="1.5"
+                            fill="#009739" />
+                    </svg>
+                    <span class="logo-text-header">EducaAI</span>
                 </div>
-                <button id="get-activity-btn">Nova Atividade</button>
-                <div id="points-display">Pontos: <span id="points">0</span></div>
-            </section>
-            <section id="leaderboard-section" class="tab-section">
-                <h2>Ranking</h2>
-                <ul id="leaderboard-list"></ul>
-            </section>
-            <section id="ai-help-section" class="tab-section">
-                <h2>Assistente IA</h2>
-                <textarea id="user-question" placeholder="Digite sua dúvida ou atividade..."></textarea>
-                <button id="ask-ai-btn">Perguntar à IA</button>
-                <div id="ai-response"></div>
-            </section>
-        </main>
-    </div>
-    <script src="script.js"></script>
-</body>
+                <button class="menu-toggle" id="menu-toggle"
+                    aria-label="Abrir menu">&#9776;</button>
+                <nav id="main-nav">
+                    <ul class="main-menu" id="main-menu">
+                        <li><button class="nav-btn"
+                                data-tab="profile">Perfil</button></li>
+                        <li><button class="nav-btn"
+                                data-tab="activities">Atividades</button></li>
+                        <li><button class="nav-btn" data-tab="ai">Assistente
+                                IA</button></li>
+                        <li><button class="nav-btn"
+                                data-tab="leaderboard">Ranking</button></li>
+                        <li><button id="logout-btn">Sair</button></li>
+                    </ul>
+                </nav>
+            </header>
+            <main>
+                <section id="user-greeting"></section>
+                <section id="profile-section" class="tab-section">
+                    <h2>Perfil</h2>
+                    <ul id="profile-info">
+                        <li><strong>Nome:</strong> <span
+                                id="profile-name">Visitante</span></li>
+                        <li><strong>Pontos:</strong> <span
+                                id="profile-points">0</span></li>
+                        <li><strong>Nível:</strong> <span
+                                id="profile-level">1</span></li>
+                        <li><strong>Tipo:</strong> <span
+                                id="profile-type">Aluno</span></li>
+                        <li>
+                            <strong>Dificuldade:</strong>
+                            <div class="difficulty-group">
+                                <button class="difficulty-btn active"
+                                    data-diff="facil"
+                                    id="btn-diff-facil">Fácil</button>
+                                <button class="difficulty-btn" data-diff="medio"
+                                    id="btn-diff-medio">Médio</button>
+                                <button class="difficulty-btn"
+                                    data-diff="dificil"
+                                    id="btn-diff-dificil">Difícil</button>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+                <section id="activity-section" class="tab-section">
+                    <h2>Atividades</h2>
+                    <label for="subject-select">Matéria:</label>
+                    <select id="subject-select">
+                        <option value="matematica">Matemática</option>
+                        <option value="portugues">Português</option>
+                        <option value="ingles">Inglês</option>
+                        <option value="geografia">Geografia</option>
+                        <option value="historia">História</option>
+                    </select>
+                    <div id="activities-list"></div>
+                    <div id="answer-section" style="display:none;">
+                        <input type="text" id="activity-answer"
+                            placeholder="Sua resposta...">
+                        <button id="submit-answer-btn">Responder</button>
+                        <span id="answer-feedback"></span>
+                        <div id="activity-tip"></div>
+                    </div>
+                    <button id="get-activity-btn">Nova Atividade</button>
+                    <div id="points-display">Pontos: <span
+                            id="points">0</span></div>
+                </section>
+                <section id="leaderboard-section" class="tab-section">
+                    <h2>Ranking</h2>
+                    <ul id="leaderboard-list"></ul>
+                </section>
+                <section id="ai-help-section" class="tab-section">
+                    <h2>Assistente IA</h2>
+                    <textarea id="user-question"
+                        placeholder="Digite sua dúvida ou atividade..."></textarea>
+                    <button id="ask-ai-btn">Perguntar à IA</button>
+                    <div id="ai-response"></div>
+                </section>
+            </main>
+        </div>
+        <script src="script.js"></script>
+    </body>
 </html>
