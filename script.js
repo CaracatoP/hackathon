@@ -279,7 +279,7 @@ loginForm.addEventListener('submit', function (e) {
     // Bloqueio de acesso cruzado
     if (user) {
         if (user.type !== type) {
-            loginError.textContent = 'Tipo de usuário incorreto para este email.';
+            loginError.textContent = 'Este e-mail não tem permissão para acessar esta área.';
             return;
         }
     } else if (type === 'professor' || type === 'aluno') {
