@@ -65,14 +65,14 @@
                     aria-label="Abrir menu">&#9776;</button>
                 <nav id="main-nav">
                     <ul class="main-menu" id="main-menu">
-                        <li><button class="nav-btn"
-                                data-tab="profile">Perfil</button></li>
-                        <li><button class="nav-btn"
-                                data-tab="activities">Atividades</button></li>
-                        <li><button class="nav-btn" data-tab="ai">Assistente
-                                IA</button></li>
-                        <li><button class="nav-btn"
-                                data-tab="leaderboard">Ranking</button></li>
+                        <li><button class="nav-btn" data-tab="profile">Perfil</button></li>
+                        <!-- Só mostra para aluno -->
+                        <li><button class="nav-btn" data-tab="activities" id="activities-tab-btn">Atividades</button></li>
+                        <li><button class="nav-btn" data-tab="ai" id="ai-tab-btn">Assistente IA</button></li>
+                        <li><button class="nav-btn" data-tab="leaderboard">Ranking</button></li>
+                        <li><button class="nav-btn" data-tab="videos">Vídeos</button></li>
+                        <!-- Botão só para professor -->
+                        <li><button class="nav-btn" data-tab="professor" id="professor-tab-btn" style="display:none;">Criar Atividades</button></li>
                         <li><button id="logout-btn">Sair</button></li>
                     </ul>
                 </nav>
@@ -82,31 +82,22 @@
                 <section id="profile-section" class="tab-section">
                     <h2>Perfil</h2>
                     <ul id="profile-info">
-                        <li><strong>Nome:</strong> <span
-                                id="profile-name">Visitante</span></li>
-                        <li><strong>Pontos:</strong> <span
-                                id="profile-points">0</span></li>
-                        <li><strong>Nível:</strong> <span
-                                id="profile-level">1</span></li>
-                        <li><strong>Tipo:</strong> <span
-                                id="profile-type">Aluno</span></li>
-                        <li>
-                            <strong>Dificuldade:</strong>
-                            <div class="difficulty-group">
-                                <button class="difficulty-btn active"
-                                    data-diff="facil"
-                                    id="btn-diff-facil">Fácil</button>
-                                <button class="difficulty-btn" data-diff="medio"
-                                    id="btn-diff-medio">Médio</button>
-                                <button class="difficulty-btn"
-                                    data-diff="dificil"
-                                    id="btn-diff-dificil">Difícil</button>
-                            </div>
-                        </li>
+                        <li><strong>Nome:</strong> <span id="profile-name">Visitante</span></li>
+                        <li><strong>Pontos:</strong> <span id="profile-points">0</span></li>
+                        <li><strong>Nível:</strong> <span id="profile-level">1</span></li>
+                        <li><strong>Tipo:</strong> <span id="profile-type">Aluno</span></li>
                     </ul>
                 </section>
                 <section id="activity-section" class="tab-section">
                     <h2>Atividades</h2>
+                    <div id="difficulty-li">
+                        <strong>Dificuldade:</strong>
+                        <div class="difficulty-group">
+                            <button class="difficulty-btn active" data-diff="facil" id="btn-diff-facil">Fácil</button>
+                            <button class="difficulty-btn" data-diff="medio" id="btn-diff-medio">Médio</button>
+                            <button class="difficulty-btn" data-diff="dificil" id="btn-diff-dificil">Difícil</button>
+                        </div>
+                    </div>
                     <label for="subject-select">Matéria:</label>
                     <select id="subject-select">
                         <option value="matematica">Matemática</option>
@@ -124,8 +115,8 @@
                         <div id="activity-tip"></div>
                     </div>
                     <button id="get-activity-btn">Nova Atividade</button>
-                    <div id="points-display">Pontos: <span
-                            id="points">0</span></div>
+                    <button id="ask-weakness-btn" type="button">Pedir à IA: Onde mais erro?</button>
+                    <div id="points-display">Pontos: <span id="points">0</span></div>
                 </section>
                 <section id="leaderboard-section" class="tab-section">
                     <h2>Ranking</h2>
@@ -137,6 +128,59 @@
                         placeholder="Digite sua dúvida ou atividade..."></textarea>
                     <button id="ask-ai-btn">Perguntar à IA</button>
                     <div id="ai-response"></div>
+                </section>
+                <section id="videos-section" class="tab-section">
+                    <h2>Vídeos Educacionais</h2>
+                    <div class="video-list" id="video-list">
+                        <iframe width="320" height="180" src="https://www.youtube.com/embed/1a1a1a1a1a1" title="Matemática"></iframe>
+                        <iframe width="320" height="180" src="https://www.youtube.com/embed/2b2b2b2b2b2" title="Português"></iframe>
+                        <!-- Adicione mais vídeos conforme desejar -->
+                    </div>
+                    <button id="show-add-video-btn" style="display:none; margin:18px 0 8px 0;">Adicionar novo vídeo</button>
+                    <div id="add-video-area" style="display:none; margin-top:18px;">
+                        <form id="add-video-form" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                            <input type="url" id="video-url" placeholder="URL do vídeo do YouTube" required style="flex:2; min-width:220px;">
+                            <input type="text" id="video-title" placeholder="Título" required style="flex:1; min-width:120px;">
+                            <button type="submit" id="add-video-btn">Adicionar Vídeo</button>
+                        </form>
+                        <div id="add-video-feedback" style="margin-top:8px; color:#009739; font-weight:600;"></div>
+                    </div>
+                </section>
+                <section id="config-section" class="tab-section">
+                    <h2>Configurações de Acessibilidade</h2>
+                    <form id="config-form">
+                        <label><input type="checkbox" id="tdah"> TDAH</label><br>
+                        <label><input type="checkbox" id="ansiedade"> Ansiedade</label><br>
+                        <label><input type="checkbox" id="daltonismo"> Daltonismo</label><br>
+                        <button type="submit">Salvar Preferências</button>
+                    </form>
+                    <div id="config-feedback"></div>
+                </section>
+                <section id="professor-section" class="tab-section" style="display:none;">
+                    <h2>Criar Atividade</h2>
+                    <form id="prof-create-form">
+                        <label for="prof-materia">Matéria:</label>
+                        <select id="prof-materia" class="prof-input">
+                            <option value="matematica">Matemática</option>
+                            <option value="portugues">Português</option>
+                            <option value="ingles">Inglês</option>
+                            <option value="geografia">Geografia</option>
+                            <option value="historia">História</option>
+                        </select>
+                        <label for="prof-dificuldade">Dificuldade:</label>
+                        <select id="prof-dificuldade" class="prof-input">
+                            <option value="facil">Fácil</option>
+                            <option value="medio">Médio</option>
+                            <option value="dificil">Difícil</option>
+                        </select>
+                        <input type="text" id="prof-question" placeholder="Digite a questão">
+                        <input type="text" id="prof-answer" placeholder="Resposta correta">
+                        <div class="prof-btn-group">
+                            <button type="submit">Adicionar Atividade</button>
+                            <button type="button" id="prof-ai-btn">Pedir sugestão à IA</button>
+                        </div>
+                    </form>
+                    <div id="prof-ai-response"></div>
                 </section>
             </main>
         </div>
