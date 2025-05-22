@@ -79,6 +79,7 @@
             </header>
             <main>
                 <section id="user-greeting"></section>
+                <!-- Ajuste na seção de perfil: só mostra histórico se for aluno -->
                 <section id="profile-section" class="tab-section">
                     <h2>Perfil</h2>
                     <ul id="profile-info">
@@ -87,6 +88,27 @@
                         <li><strong>Nível:</strong> <span id="profile-level">1</span></li>
                         <li><strong>Tipo:</strong> <span id="profile-type">Aluno</span></li>
                     </ul>
+                    <div id="historico-desempenho" style="margin-top:28px; display:none;">
+                        <h3 style="color:#225a99; margin-bottom:14px; text-align:center;">Histórico de Erros e Acertos</h3>
+                        <div style="overflow-x:auto;">
+                            <table id="tabela-historico" style="width:100%; border-collapse:collapse; background:#f7fafc; border-radius:10px; box-shadow:0 2px 8px #00973911;">
+                                <thead>
+                                    <tr style="background:#e6f2ff;">
+                                        <th style="padding:8px 4px; border-radius:8px 0 0 8px; text-align:left;">Matéria</th>
+                                        <th style="padding:8px 4px;">Fácil<br><span style='color:#38a169;'>✔</span></th>
+                                        <th style="padding:8px 4px;">Fácil<br><span style='color:#e53e3e;'>✘</span></th>
+                                        <th style="padding:8px 4px;">Médio<br><span style='color:#38a169;'>✔</span></th>
+                                        <th style="padding:8px 4px;">Médio<br><span style='color:#e53e3e;'>✘</span></th>
+                                        <th style="padding:8px 4px;">Difícil<br><span style='color:#38a169;'>✔</span></th>
+                                        <th style="padding:8px 4px; border-radius:0 8px 8px 0;">Difícil<br><span style='color:#e53e3e;'>✘</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Conteúdo dinâmico pelo JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </section>
                 <section id="activity-section" class="tab-section">
                     <h2>Atividades</h2>
@@ -116,6 +138,7 @@
                     </div>
                     <button id="get-activity-btn">Nova Atividade</button>
                     <button id="ask-weakness-btn" type="button">Pedir à IA: Onde mais erro?</button>
+                    <div id="weakness-response" style="margin-top:10px; color:#225a99; font-weight:600; min-height:24px;"></div>
                     <div id="points-display">Pontos: <span id="points">0</span></div>
                 </section>
                 <section id="leaderboard-section" class="tab-section">
