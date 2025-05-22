@@ -88,12 +88,13 @@ body {
     font-size: 1em;
     margin-top: 8px;
     cursor: pointer;
-    text-decoration: underline;
+    text-decoration: none; /* Removido o sublinhado */
     transition: color 0.2s;
 }
 
 .link-btn:hover {
     color: #fedf00;
+    text-decoration: underline;
 }
 
 .error {
@@ -279,9 +280,24 @@ header {
 
 #subject-select {
     margin: 0 0 12px 8px;
-    padding: 4px 8px;
-    border-radius: 5px;
-    border: 1px solid #bcd0ee;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #bcd0ee;
+    background: #f7fafc;
+    color: #225a99;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,151,57,0.07);
+    transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    min-width: 180px;
+    cursor: pointer;
+}
+
+#subject-select:focus {
+    border: 1.5px solid #009739;
+    background: #e6f2ff;
+    box-shadow: 0 0 0 2px #fedf0033;
 }
 
 #activities-list {
@@ -631,6 +647,30 @@ header {
     transform: translateY(-2px) scale(1.04);
 }
 
+#ask-weakness-btn {
+    background: #fedf00;
+    color: #225a99;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-left: 10px;
+    margin-bottom: 4px;
+    box-shadow: 0 6px 32px rgba(254, 223, 0, 0.13);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+    display: inline-block;
+}
+
+#ask-weakness-btn:hover {
+    background: #009739;
+    color: #fff;
+    box-shadow: 0 6px 32px rgba(0,151,57,0.13);
+    transform: translateY(-2px) scale(1.04);
+}
+
 /* ...existing code... */
 #welcome-screen {
     position: fixed;
@@ -675,4 +715,254 @@ header {
         opacity: 1;
         transform: none;
     }
+}
+
+/* ...existing code... */
+#professor-section button,
+#professor-section input[type="submit"] {
+    background: #009739;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 8px;
+    margin-bottom: 6px;
+    box-shadow: 0 6px 32px rgba(0, 151, 57, 0.13);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+    display: inline-block;
+}
+
+#professor-section button:hover,
+#professor-section input[type="submit"]:hover {
+    background: #225a99;
+    color: #fff;
+    box-shadow: 0 6px 32px rgba(0, 151, 57, 0.13);
+    transform: translateY(-2px) scale(1.04);
+}
+
+#professor-section input[type="text"] {
+    width: 96%;
+    padding: 10px;
+    margin: 8px 0 0 0;
+    border: 1.5px solid #bcd0ee;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #f7fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    display: block;
+}
+
+#professor-section input[type="text"]:focus {
+    border: 1.5px solid #009739;
+    box-shadow: 0 0 0 2px #fedf0033;
+    outline: none;
+}
+
+#professor-section label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 500;
+    color: #225a99;
+}
+
+#professor-section .prof-input,
+#professor-section select {
+    width: 98%;
+    padding: 10px;
+    margin: 6px 0 0 0;
+    border: 1.5px solid #bcd0ee;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #f7fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    display: block;
+}
+
+#professor-section .prof-input:focus,
+#professor-section select:focus {
+    border: 1.5px solid #009739;
+    box-shadow: 0 0 0 2px #fedf0033;
+    outline: none;
+}
+
+
+#professor-section #prof-create-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+#professor-section #prof-create-form label,
+#professor-section #prof-create-form select,
+#professor-section #prof-create-form input[type="text"] {
+    flex: 1 1 100%;
+    margin-bottom: 0;
+}
+
+#professor-section .prof-btn-group {
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+    width: 100%;
+    margin-top: 12px;
+}
+
+#professor-section button,
+#professor-section input[type="submit"] {
+    min-width: 160px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* ...existing code... */
+#config-section {
+    background: #f7fafc;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.07);
+    padding: 28px 24px 24px 24px;
+    max-width: 420px;
+    margin: 32px auto 0 auto;
+}
+
+#config-section h2 {
+    color: #225a99;
+    font-size: 1.3em;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+#config-form label {
+    display: flex;
+    align-items: center;
+    font-size: 1.08em;
+    color: #225a99;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    gap: 10px;
+}
+
+#config-form input[type="checkbox"] {
+    accent-color: #009739;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+#config-form button[type="submit"] {
+    background: #009739;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 10px;
+    box-shadow: 0 6px 32px rgba(0,151,57,0.13);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+    display: block;
+    width: 100%;
+}
+
+#config-form button[type="submit"]:hover {
+    background: #225a99;
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+}
+
+#config-feedback {
+    margin-top: 12px;
+    color: #009739;
+    font-weight: 600;
+    text-align: center;
+    min-height: 22px;
+}
+
+#difficulty-li {
+    margin-bottom: 18px; /* Adiciona espaço após o bloco de dificuldade */
+}
+
+#subject-select {
+    margin: 0 0 12px 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #bcd0ee;
+    background: #f7fafc;
+    color: #225a99;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,151,57,0.07);
+    transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    min-width: 180px;
+    cursor: pointer;
+}
+
+#subject-select:focus {
+    border: 1.5px solid #009739;
+    background: #e6f2ff;
+    box-shadow: 0 0 0 2px #fedf0033;
+}
+
+/* ...existing code... */
+#add-video-form input[type="url"],
+#add-video-form input[type="text"] {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #bcd0ee;
+    font-size: 1em;
+    background: #f7fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+#add-video-form input:focus {
+    border: 1.5px solid #009739;
+    box-shadow: 0 0 0 2px #fedf0033;
+    outline: none;
+}
+
+#add-video-btn {
+    background: #009739;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 6px 32px rgba(0,151,57,0.13);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+#add-video-btn:hover {
+    background: #225a99;
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+}
+
+#show-add-video-btn {
+    background: #009739;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 6px 32px rgba(0,151,57,0.13);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#show-add-video-btn:hover {
+    background: #225a99;
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
 }
