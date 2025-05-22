@@ -671,7 +671,6 @@ header {
     transform: translateY(-2px) scale(1.04);
 }
 
-/* ...existing code... */
 #welcome-screen {
     position: fixed;
     z-index: 9999;
@@ -717,7 +716,6 @@ header {
     }
 }
 
-/* ...existing code... */
 #professor-section button,
 #professor-section input[type="submit"] {
     background: #009739;
@@ -818,7 +816,6 @@ header {
     margin-bottom: 0;
 }
 
-/* ...existing code... */
 #config-section {
     background: #f7fafc;
     border-radius: 12px;
@@ -909,7 +906,6 @@ header {
     box-shadow: 0 0 0 2px #fedf0033;
 }
 
-/* ...existing code... */
 #add-video-form input[type="url"],
 #add-video-form input[type="text"] {
     padding: 8px 12px;
@@ -965,4 +961,27 @@ header {
     background: #225a99;
     color: #fff;
     transform: translateY(-2px) scale(1.04);
+}
+
+.video-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.video-list iframe {
+    border-radius: 12px;
+    box-shadow: 0 2px 16px #00973922;
+    border: none;
+    width: 340px;
+    height: 192px;
+    background: #fff;
+    transition: transform 0.2s;
+}
+
+.video-list iframe:hover {
+    transform: scale(1.04);
+    box-shadow: 0 4px 24px #00973944;
 }
