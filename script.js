@@ -70,86 +70,119 @@ let atividadeAtual = null;
 let dificuldade = 'facil';
 let errosPorMateria = { matematica: 0, portugues: 0, ingles: 0, geografia: 0, historia: 0 };
 
+// Histórico de desempenho por matéria e dificuldade
+let historicoDesempenho = JSON.parse(localStorage.getItem('historicoDesempenho')) || {};
+
 // Atividades por matéria e dificuldade (todas com 3 perguntas, mais desafiadoras)
 const perguntasFaceis = {
     matematica: [
-        { pergunta: 'Quanto é 7 + 8?', resposta: '15', dica: 'Soma simples.' },
-        { pergunta: 'Quanto é 5 x 3?', resposta: '15', dica: 'Multiplicação básica.' },
-        { pergunta: 'Qual é o dobro de 9?', resposta: '18', dica: 'Multiplique por 2.' }
+        { pergunta: 'Qual é o valor de 15 + 27?', resposta: '42', dica: 'Soma de dois números.' },
+        { pergunta: 'Resolva: 8 x 6', resposta: '48', dica: 'Multiplicação simples.' },
+        { pergunta: 'Quanto é 100 dividido por 4?', resposta: '25', dica: 'Divida 100 em 4 partes.' },
+        { pergunta: 'Se um triângulo tem lados de 3, 4 e 5, qual é o perímetro?', resposta: '12', dica: 'Some todos os lados.' },
+        { pergunta: 'Qual é o resultado de 5²?', resposta: '25', dica: 'Potência de 5.' }
     ],
     portugues: [
-        { pergunta: 'Qual o plural de "animal"?', resposta: 'animais', dica: 'Termina com "ais".' },
-        { pergunta: 'Complete: "Ele ___ feliz."', resposta: 'está', dica: 'Verbo de estado.' },
-        { pergunta: 'Qual o feminino de "ator"?', resposta: 'atriz', dica: 'Troque "or" por "riz".' }
+        { pergunta: 'Qual o plural de "cidadão"?', resposta: 'cidadãos', dica: 'Termina com "ãos".' },
+        { pergunta: 'Complete: "Eles ___ indo à escola."', resposta: 'estão', dica: 'Verbo de estado.' },
+        { pergunta: 'Qual o feminino de "leão"?', resposta: 'leoa', dica: 'Troque "ão" por "oa".' },
+        { pergunta: 'Qual o antônimo de "feliz"?', resposta: 'triste', dica: 'Sentimento oposto.' },
+        { pergunta: 'Como se chama o lugar onde se guardam livros?', resposta: 'biblioteca', dica: 'Começa com "biblio".' }
     ],
     ingles: [
-        { pergunta: 'Traduza: "dog"', resposta: 'cachorro', dica: 'Animal doméstico.' },
-        { pergunta: 'Como se diz "livro" em inglês?', resposta: 'book', dica: 'Começa com "b".' },
-        { pergunta: 'Traduza: "school"', resposta: 'escola', dica: 'Onde você estuda.' }
+        { pergunta: 'Traduza: "house"', resposta: 'casa', dica: 'Onde você mora.' },
+        { pergunta: 'Como se diz "amigo" em inglês?', resposta: 'friend', dica: 'Começa com "f".' },
+        { pergunta: 'Traduza: "car"', resposta: 'carro', dica: 'Meio de transporte.' },
+        { pergunta: 'Como se diz "professor" em inglês?', resposta: 'teacher', dica: 'Pessoa que ensina.' },
+        { pergunta: 'Traduza: "water"', resposta: 'água', dica: 'Líquido essencial.' }
     ],
     geografia: [
-        { pergunta: 'Qual é o maior país da América do Sul?', resposta: 'brasil', dica: 'Onde você mora.' },
-        { pergunta: 'Qual oceano banha o litoral brasileiro?', resposta: 'atlântico', dica: 'Começa com "a".' },
-        { pergunta: 'Capital do estado do Rio de Janeiro?', resposta: 'rio de janeiro', dica: 'Mesmo nome do estado.' }
+        { pergunta: 'Qual é o maior país do mundo em área?', resposta: 'rússia', dica: 'Fica na Europa e Ásia.' },
+        { pergunta: 'Qual é o rio mais extenso do Brasil?', resposta: 'amazonas', dica: 'Corta a floresta.' },
+        { pergunta: 'Qual é o continente do Egito?', resposta: 'áfrica', dica: 'Começa com "á".' },
+        { pergunta: 'Qual é o menor continente?', resposta: 'oceania', dica: 'Fica do outro lado do mundo.' },
+        { pergunta: 'Qual oceano banha o litoral leste do Brasil?', resposta: 'atlântico', dica: 'Começa com "a".' }
     ],
     historia: [
         { pergunta: 'Quem foi o primeiro presidente do Brasil?', resposta: 'marechal deodoro', dica: 'Marechal.' },
         { pergunta: 'Ano da Proclamação da República?', resposta: '1889', dica: 'Século XIX.' },
-        { pergunta: 'Quem assinou a Lei Áurea?', resposta: 'princesa isabel', dica: 'Foi uma princesa.' }
+        { pergunta: 'Quem assinou a Lei Áurea?', resposta: 'princesa isabel', dica: 'Foi uma princesa.' },
+        { pergunta: 'Quem descobriu o Brasil?', resposta: 'pedro álvares cabral', dica: 'Navegador português.' },
+        { pergunta: 'Qual era o nome do imperador do Brasil em 1822?', resposta: 'dom pedro i', dica: 'Primeiro imperador.' }
     ]
 };
 const perguntasMedias = {
     matematica: [
-        { pergunta: 'Quanto é 12 x 7?', resposta: '84', dica: 'Multiplicação.' },
-        { pergunta: 'Qual é a metade de 36?', resposta: '18', dica: 'Divida por 2.' },
-        { pergunta: 'Quanto é 45 dividido por 5?', resposta: '9', dica: 'Divisão simples.' }
+        { pergunta: 'Resolva: 3² + 4²', resposta: '25', dica: 'Potências e soma.' },
+        { pergunta: 'Qual é o MMC de 12 e 18?', resposta: '36', dica: 'Mínimo múltiplo comum.' },
+        { pergunta: 'Quanto é 144 dividido por 12?', resposta: '12', dica: 'Divisão exata.' },
+        { pergunta: 'Se um retângulo tem lados 7 e 9, qual é a área?', resposta: '63', dica: 'Base x altura.' },
+        { pergunta: 'Qual é a raiz quadrada de 169?', resposta: '13', dica: 'Multiplicação reversa.' }
     ],
     portugues: [
-        { pergunta: 'Qual o antônimo de "feliz"?', resposta: 'triste', dica: 'Sentimento oposto.' },
         { pergunta: 'O que é um advérbio?', resposta: 'palavra que modifica o verbo', dica: 'Relaciona-se ao verbo.' },
-        { pergunta: 'Qual é o aumentativo de "casa"?', resposta: 'casarão', dica: 'Termina com "ão".' }
+        { pergunta: 'Qual é o aumentativo de "casa"?', resposta: 'casarão', dica: 'Termina com "ão".' },
+        { pergunta: 'O que é um sujeito oculto?', resposta: 'não está explícito', dica: 'Não aparece na frase.' },
+        { pergunta: 'Qual é o coletivo de "peixe"?', resposta: 'cardume', dica: 'Grupo de peixes.' },
+        { pergunta: 'O que é uma interjeição?', resposta: 'palavra que expressa emoção', dica: 'Expressa sentimentos.' }
     ],
     ingles: [
         { pergunta: 'Traduza: "window"', resposta: 'janela', dica: 'Presente em toda casa.' },
-        { pergunta: 'Como se diz "amigo" em inglês?', resposta: 'friend', dica: 'Começa com "f".' },
-        { pergunta: 'Traduza: "teacher"', resposta: 'professor', dica: 'Pessoa que ensina.' }
+        { pergunta: 'Como se diz "irmã" em inglês?', resposta: 'sister', dica: 'Começa com "s".' },
+        { pergunta: 'Traduza: "mountain"', resposta: 'montanha', dica: 'Elevação natural.' },
+        { pergunta: 'Como se diz "trabalho" em inglês?', resposta: 'work', dica: 'Começa com "w".' },
+        { pergunta: 'Traduza: "street"', resposta: 'rua', dica: 'Onde passam carros.' }
     ],
     geografia: [
-        { pergunta: 'Qual continente é o Brasil?', resposta: 'américa do sul', dica: 'Fica ao sul.' },
         { pergunta: 'Qual é o maior oceano do mundo?', resposta: 'pacífico', dica: 'Começa com "p".' },
-        { pergunta: 'Qual país faz fronteira com o Brasil ao sul?', resposta: 'uruguai', dica: 'Famoso pelo churrasco.' }
+        { pergunta: 'Qual país faz fronteira com o Brasil ao sul?', resposta: 'uruguai', dica: 'Famoso pelo churrasco.' },
+        { pergunta: 'Qual é a capital da Argentina?', resposta: 'buenos aires', dica: 'Cidade famosa pelo tango.' },
+        { pergunta: 'Qual é o clima predominante na Amazônia?', resposta: 'equatorial', dica: 'Muito úmido e quente.' },
+        { pergunta: 'Qual é o deserto mais seco do mundo?', resposta: 'atacama', dica: 'Fica no Chile.' }
     ],
     historia: [
         { pergunta: 'Quem descobriu o Brasil?', resposta: 'pedro álvares cabral', dica: 'Navegador português.' },
         { pergunta: 'Em que ano terminou a Segunda Guerra Mundial?', resposta: '1945', dica: 'Década de 40.' },
-        { pergunta: 'Quem foi Tiradentes?', resposta: 'líder da inconfidência mineira', dica: 'Movimento de Minas Gerais.' }
+        { pergunta: 'Quem foi Tiradentes?', resposta: 'líder da inconfidência mineira', dica: 'Movimento de Minas Gerais.' },
+        { pergunta: 'O que foi a Revolução Industrial?', resposta: 'mudança na produção', dica: 'Máquinas e fábricas.' },
+        { pergunta: 'Quem foi Zumbi dos Palmares?', resposta: 'líder quilombola', dica: 'Lutou contra a escravidão.' }
     ]
 };
 const perguntasDificeis = {
     matematica: [
-        { pergunta: 'Qual é a raiz quadrada de 144?', resposta: '12', dica: 'Multiplicação reversa.' },
-        { pergunta: 'Resolva: (5² + 3²) x 2', resposta: '68', dica: 'Lembre-se da ordem das operações.' },
-        { pergunta: 'Quanto é 2³ + 4²?', resposta: '24', dica: 'Potenciação.' }
+        { pergunta: 'Resolva: (3³ x 2) + (5² - 7)', resposta: '49', dica: 'Potências, multiplicação e soma.' },
+        { pergunta: 'Qual é o valor de x na equação 2x + 5 = 21?', resposta: '8', dica: 'Isolar o x.' },
+        { pergunta: 'Se um círculo tem raio 7, qual é sua área? (Use π ≈ 3,14)', resposta: '153.86', dica: 'π x raio² (arredonde para 2 casas).' },
+        { pergunta: 'Qual é o determinante da matriz [[2,3],[1,4]]?', resposta: '5', dica: 'ad - bc.' },
+        { pergunta: 'Resolva: 5! (fatorial de 5)', resposta: '120', dica: 'Multiplique todos os inteiros de 1 a 5.' }
     ],
     portugues: [
         { pergunta: 'O que é uma oração subordinada?', resposta: 'frase dependente', dica: 'Depende de outra oração.' },
         { pergunta: 'O que é um predicativo do sujeito?', resposta: 'termo que caracteriza o sujeito', dica: 'Caracteriza o sujeito.' },
-        { pergunta: 'O que é uma metáfora?', resposta: 'figura de linguagem', dica: 'Comparação implícita.' }
+        { pergunta: 'O que é uma metáfora?', resposta: 'figura de linguagem', dica: 'Comparação implícita.' },
+        { pergunta: 'O que é um aposto?', resposta: 'termo explicativo', dica: 'Explica um termo anterior.' },
+        { pergunta: 'O que é uma anáfora?', resposta: 'repetição de palavra', dica: 'Figura de linguagem.' }
     ],
     ingles: [
         { pergunta: 'Traduza: "environment"', resposta: 'meio ambiente', dica: 'Palavra comum em sustentabilidade.' },
         { pergunta: 'Traduza: "thought"', resposta: 'pensamento', dica: 'Vem do verbo "think".' },
-        { pergunta: 'Como se diz "desenvolvimento" em inglês?', resposta: 'development', dica: 'Começa com "d".' }
+        { pergunta: 'Como se diz "desenvolvimento" em inglês?', resposta: 'development', dica: 'Começa com "d".' },
+        { pergunta: 'Traduza: "challenge"', resposta: 'desafio', dica: 'Algo difícil.' },
+        { pergunta: 'Como se diz "conhecimento" em inglês?', resposta: 'knowledge', dica: 'Começa com "k".' }
     ],
     geografia: [
         { pergunta: 'Qual o maior deserto do mundo?', resposta: 'saara', dica: 'Fica na África.' },
         { pergunta: 'Qual é o rio mais extenso do mundo?', resposta: 'nilo', dica: 'Fica na África.' },
-        { pergunta: 'Qual é a capital da Austrália?', resposta: 'camberra', dica: 'Não é Sydney.' }
+        { pergunta: 'Qual é a capital da Austrália?', resposta: 'camberra', dica: 'Não é Sydney.' },
+        { pergunta: 'Qual é o ponto mais alto do Brasil?', resposta: 'pico da neblina', dica: 'Fica no Amazonas.' },
+        { pergunta: 'Qual é o país mais populoso da África?', resposta: 'nigéria', dica: 'Começa com "n".' }
     ],
     historia: [
         { pergunta: 'Quem assinou a Lei Áurea?', resposta: 'princesa isabel', dica: 'Foi uma princesa.' },
         { pergunta: 'O que foi a Revolução Francesa?', resposta: 'mudança política na frança', dica: 'Liberdade, igualdade, fraternidade.' },
-        { pergunta: 'Quem foi Dom Pedro II?', resposta: 'imperador do brasil', dica: 'Segundo imperador.' }
+        { pergunta: 'Quem foi Dom Pedro II?', resposta: 'imperador do brasil', dica: 'Segundo imperador.' },
+        { pergunta: 'O que foi a Guerra Fria?', resposta: 'conflito entre eua e urss', dica: 'Sem confronto direto.' },
+        { pergunta: 'Quem foi Martin Luther King?', resposta: 'líder dos direitos civis', dica: 'EUA, anos 60.' }
     ]
 };
 
@@ -334,6 +367,8 @@ subjectSelect.addEventListener('change', novaAtividade);
 submitAnswerBtn.addEventListener('click', function () {
     if (!atividadeAtual) return;
     const resposta = activityAnswer.value.trim().toLowerCase();
+    const materia = subjectSelect.value;
+    const dificuldadeAtual = dificuldade;
     if (resposta === atividadeAtual.resposta) {
         const pontosGanhos = 10 * (dificuldade === 'facil' ? 1 : dificuldade === 'medio' ? 2 : 3);
         pontos += pontosGanhos;
@@ -345,18 +380,33 @@ submitAnswerBtn.addEventListener('click', function () {
         answerFeedback.className = 'correct';
         document.getElementById('activity-tip').textContent = atividadeAtual.dica ? `Dica: ${atividadeAtual.dica}` : '';
         salvarLeaderboard(profileName.textContent, pontos);
-        setTimeout(novaAtividade, 1200);
+        atualizarHistorico(materia, dificuldadeAtual, true);
+        const dificuldadeAnterior = dificuldade;
+        ajustarDificuldade(true);
+        // Se a dificuldade aumentou, atualiza a pergunta rapidamente
+        if (dificuldade !== dificuldadeAnterior) {
+            setTimeout(novaAtividade, 400); // Troca a pergunta rapidamente se a dificuldade mudou
+        } else {
+            setTimeout(novaAtividade, 4000); // Atualiza a pergunta após 4 segundos
+        }
     } else {
         answerFeedback.textContent = 'Tente novamente!';
         answerFeedback.className = 'incorrect';
         document.getElementById('activity-tip').textContent = atividadeAtual.dica ? `Dica: ${atividadeAtual.dica}` : '';
         errosPorMateria[subjectSelect.value] = (errosPorMateria[subjectSelect.value] || 0) + 1;
+        atualizarHistorico(materia, dificuldadeAtual, false);
+        const dificuldadeAnterior = dificuldade;
         ajustarDificuldade(false);
+        // Se a dificuldade diminuiu, atualiza a pergunta rapidamente
+        if (dificuldade !== dificuldadeAnterior) {
+            setTimeout(novaAtividade, 400); // Troca a pergunta rapidamente se a dificuldade mudou
+        }
     }
 });
 
 // Botão para pedir à IA os pontos que mais erra
 document.getElementById('ask-weakness-btn').addEventListener('click', function () {
+    const weaknessDiv = document.getElementById('weakness-response');
     let maior = 0, materia = '';
     for (const mat in errosPorMateria) {
         if (errosPorMateria[mat] > maior) {
@@ -365,9 +415,9 @@ document.getElementById('ask-weakness-btn').addEventListener('click', function (
         }
     }
     if (maior === 0) {
-        aiResponse.innerHTML = 'Você ainda não errou nenhuma matéria!';
+        weaknessDiv.innerHTML = 'Você ainda não errou nenhuma matéria!';
     } else {
-        aiResponse.innerHTML = `Você está errando mais em <b>${materia.charAt(0).toUpperCase() + materia.slice(1)}</b>. Que tal focar nela?`;
+        weaknessDiv.innerHTML = `Você está errando mais em <b>${materia.charAt(0).toUpperCase() + materia.slice(1)}</b>. Que tal focar nela?`;
     }
 });
 
@@ -419,7 +469,7 @@ navBtns.forEach(btn => {
 
         if (tab === 'videos') {
             if (currentUser && currentUser.type === 'professor') {
-                showAddVideoBtn.style.display = '';
+                showAddVideoBtn.style.display = 'block';
                 addVideoArea.style.display = 'none';
             } else {
                 showAddVideoBtn.style.display = 'none';
@@ -585,14 +635,31 @@ document.getElementById('add-video-form').addEventListener('submit', function(e)
 const showAddVideoBtn = document.getElementById('show-add-video-btn');
 const addVideoArea = document.getElementById('add-video-area');
 
-// Após login do professor
-if (type === 'professor') {
-    showAddVideoBtn.style.display = '';
-    addVideoArea.style.display = 'none';
-} else {
-    showAddVideoBtn.style.display = 'none';
-    addVideoArea.style.display = 'none';
+// Após login do professor, garanta que o botão aparece
+function atualizarBotaoVideo() {
+    if (currentUser && currentUser.type === 'professor') {
+        showAddVideoBtn.style.display = 'block';
+        addVideoArea.style.display = 'none';
+    } else {
+        showAddVideoBtn.style.display = 'none';
+        addVideoArea.style.display = 'none';
+    }
 }
+
+// Chame após login:
+setTimeout(() => {
+    atualizarBotaoVideo();
+    // Se a aba de vídeos estiver ativa após login, garanta que o botão aparece:
+    if (tabSections.videos.classList.contains('active')) {
+        if (currentUser && currentUser.type === 'professor') {
+            showAddVideoBtn.style.display = 'block';
+            addVideoArea.style.display = 'none';
+        } else {
+            showAddVideoBtn.style.display = 'none';
+            addVideoArea.style.display = 'none';
+        }
+    }
+}, 2200);
 
 // Ao clicar na aba de vídeos
 navBtns.forEach(btn => {
@@ -602,7 +669,7 @@ navBtns.forEach(btn => {
 
         if (tab === 'videos') {
             if (currentUser && currentUser.type === 'professor') {
-                showAddVideoBtn.style.display = '';
+                showAddVideoBtn.style.display = 'block';
                 addVideoArea.style.display = 'none';
             } else {
                 showAddVideoBtn.style.display = 'none';
@@ -615,5 +682,62 @@ navBtns.forEach(btn => {
 // Ao clicar no botão "Adicionar novo vídeo"
 showAddVideoBtn.addEventListener('click', function () {
     addVideoArea.style.display = '';
-    showAddVideoBtn.style.display = 'none';
+    showAddVideoBtn.style.display = 'none'; // Mantém assim para esconder o botão ao abrir o formulário
 });
+
+// Função para atualizar histórico
+function atualizarHistorico(materia, dificuldade, acertou) {
+    if (!historicoDesempenho[materia]) historicoDesempenho[materia] = {};
+    if (!historicoDesempenho[materia][dificuldade]) historicoDesempenho[materia][dificuldade] = { acertos: 0, erros: 0 };
+    if (acertou) {
+        historicoDesempenho[materia][dificuldade].acertos++;
+    } else {
+        historicoDesempenho[materia][dificuldade].erros++;
+    }
+    localStorage.setItem('historicoDesempenho', JSON.stringify(historicoDesempenho));
+}
+
+// Função para renderizar o histórico na tabela do perfil
+function renderizarHistorico() {
+    const tbody = document.querySelector('#tabela-historico tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    const materias = ['matematica', 'portugues', 'ingles', 'geografia', 'historia'];
+    const dificuldades = ['facil', 'medio', 'dificil'];
+    const nomes = {
+        matematica: 'Matemática',
+        portugues: 'Português',
+        ingles: 'Inglês',
+        geografia: 'Geografia',
+        historia: 'História'
+    };
+    materias.forEach(materia => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="padding:7px 4px; font-weight:600; color:#225a99;">${nomes[materia]}</td>
+            ${dificuldades.map(dif => {
+                const stats = (historicoDesempenho[materia] && historicoDesempenho[materia][dif]) || { acertos: 0, erros: 0 };
+                return `
+                    <td style="padding:7px 4px; color:#38a169; text-align:center;">${stats.acertos}</td>
+                    <td style="padding:7px 4px; color:#e53e3e; text-align:center;">${stats.erros}</td>
+                `;
+            }).join('')}
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Atualize o histórico ao mostrar o perfil (só para alunos)
+const originalShowTab = showTab;
+showTab = function(tab) {
+    originalShowTab(tab);
+    if (tab === 'profile') {
+        // Mostra histórico só se for aluno
+        const isAluno = (profileType.textContent.trim().toLowerCase() === 'aluno');
+        document.getElementById('historico-desempenho').style.display = isAluno ? '' : 'none';
+        if (isAluno) renderizarHistorico();
+    }
+};
+
+// Atualize o histórico ao iniciar
+renderizarHistorico();
