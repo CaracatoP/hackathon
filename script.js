@@ -26,7 +26,10 @@ const tabSections = {
     profile: document.getElementById('profile-section'),
     activities: document.getElementById('activity-section'),
     ai: document.getElementById('ai-help-section'),
-    leaderboard: document.getElementById('leaderboard-section')
+    leaderboard: document.getElementById('leaderboard-section'),
+    config: document.getElementById('config-section'), // <-- já está correto!
+    videos: document.getElementById('videos-section'), // se quiser navegação para vídeos
+    professor: document.getElementById('professor-section') // se quiser navegação para professor
 };
 
 // Atividades
@@ -53,6 +56,11 @@ const mainMenu = document.getElementById('main-menu');
 const welcomeScreen = document.getElementById('welcome-screen');
 const welcomeMsg = document.getElementById('welcome-msg');
 
+// Configurações
+const configSection = document.getElementById('config-section');
+const configForm = document.getElementById('config-form');
+const configFeedback = document.getElementById('config-feedback');
+
 // Estado global
 let currentUser = null;
 let pontos = 0;
@@ -60,6 +68,7 @@ let nivel = 1;
 let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 let atividadeAtual = null;
 let dificuldade = 'facil';
+let errosPorMateria = { matematica: 0, portugues: 0, ingles: 0, geografia: 0, historia: 0 };
 
 // Atividades por matéria e dificuldade (todas com 3 perguntas, mais desafiadoras)
 const perguntasFaceis = {
@@ -198,13 +207,31 @@ loginForm.addEventListener('submit', function (e) {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
     const type = document.getElementById('login-type').value;
-    const user = users.find(u => u.email === email && u.password === password && u.type === type);
+    const user = users.find(u => u.email === email && u.password === password);
+
+    // Bloqueio de acesso cruzado
+    if (user) {
+        if (user.type !== type) {
+            loginError.textContent = 'Tipo de usuário incorreto para este email.';
+            return;
+        }
+    } else if (type === 'professor' || type === 'aluno') {
+        loginError.textContent = 'Usuário ou senha inválidos.';
+        return;
+    }
+
     if (user || type === 'aluno') {
         currentUser = user || { name: 'Visitante', type: type, email: email };
         loginContainer.style.display = 'none';
-        // Mostra tela de saudação centralizada
-        welcomeMsg.textContent = `Olá, ${currentUser.name}! Pronto para aprender hoje?`;
+
+        // Mostra tela de saudação centralizada personalizada para professor/aluno
+        if (type === 'professor') {
+            welcomeMsg.textContent = `Olá professor, vamos ensinar hoje?`;
+        } else {
+            welcomeMsg.textContent = `Olá, ${currentUser.name}! Pronto para aprender hoje?`;
+        }
         welcomeScreen.style.display = 'flex';
+
         setTimeout(() => {
             welcomeScreen.style.display = 'none';
             mainApp.style.display = 'block';
@@ -217,7 +244,27 @@ loginForm.addEventListener('submit', function (e) {
             nivel = 1 + Math.floor(pontos / 100);
             atualizarPerfil();
             atualizarLeaderboard();
-            showTab('activities');
+            if (type === 'professor') {
+                // Mostra aba do professor, esconde as de aluno
+                document.getElementById('professor-tab-btn').style.display = '';
+                document.getElementById('professor-section').style.display = '';
+                document.getElementById('activities-tab-btn').style.display = 'none';
+                document.getElementById('ai-tab-btn').textContent = 'IA Criar Questão';
+                document.getElementById('videos-section').style.display = 'none';
+                document.getElementById('difficulty-li').style.display = 'none';
+                showTab('professor');
+                document.getElementById('add-video-area').style.display = '';
+            } else {
+                // Aluno vê abas normais
+                document.getElementById('professor-tab-btn').style.display = 'none';
+                document.getElementById('professor-section').style.display = 'none';
+                document.getElementById('activities-tab-btn').style.display = '';
+                document.getElementById('ai-tab-btn').textContent = 'Assistente IA';
+                document.getElementById('videos-section').style.display = '';
+                document.getElementById('difficulty-li').style.display = '';
+                showTab('config'); // <-- CORREÇÃO AQUI!
+                document.getElementById('add-video-area').style.display = 'none';
+            }
         }, 2200);
     } else {
         loginError.textContent = 'Usuário ou senha inválidos.';
@@ -303,6 +350,24 @@ submitAnswerBtn.addEventListener('click', function () {
         answerFeedback.textContent = 'Tente novamente!';
         answerFeedback.className = 'incorrect';
         document.getElementById('activity-tip').textContent = atividadeAtual.dica ? `Dica: ${atividadeAtual.dica}` : '';
+        errosPorMateria[subjectSelect.value] = (errosPorMateria[subjectSelect.value] || 0) + 1;
+        ajustarDificuldade(false);
+    }
+});
+
+// Botão para pedir à IA os pontos que mais erra
+document.getElementById('ask-weakness-btn').addEventListener('click', function () {
+    let maior = 0, materia = '';
+    for (const mat in errosPorMateria) {
+        if (errosPorMateria[mat] > maior) {
+            maior = errosPorMateria[mat];
+            materia = mat;
+        }
+    }
+    if (maior === 0) {
+        aiResponse.innerHTML = 'Você ainda não errou nenhuma matéria!';
+    } else {
+        aiResponse.innerHTML = `Você está errando mais em <b>${materia.charAt(0).toUpperCase() + materia.slice(1)}</b>. Que tal focar nela?`;
     }
 });
 
@@ -351,6 +416,16 @@ navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         const tab = btn.dataset.tab;
         showTab(tab);
+
+        if (tab === 'videos') {
+            if (currentUser && currentUser.type === 'professor') {
+                showAddVideoBtn.style.display = '';
+                addVideoArea.style.display = 'none';
+            } else {
+                showAddVideoBtn.style.display = 'none';
+                addVideoArea.style.display = 'none';
+            }
+        }
     });
 });
 
@@ -395,3 +470,150 @@ pointsDisplay.textContent = pontos;
 atualizarPerfil();
 atualizarLeaderboard();
 showTab('activities');
+
+// Salvar preferências
+configForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const prefs = {
+        tdah: document.getElementById('tdah').checked,
+        ansiedade: document.getElementById('ansiedade').checked,
+        daltonismo: document.getElementById('daltonismo').checked
+    };
+    localStorage.setItem('acessibilidade_' + currentUser.email, JSON.stringify(prefs));
+    configFeedback.textContent = 'Preferências salvas!';
+    setTimeout(() => showTab('activities'), 1200);
+});
+
+// Crie a seção do professor:
+const professorSection = document.createElement('section');
+professorSection.id = 'professor-section';
+professorSection.className = 'tab-section';
+professorSection.innerHTML = `
+    <h2>Criar Atividade</h2>
+    <form id="prof-create-form">
+        <select id="prof-materia">
+            <option value="matematica">Matemática</option>
+            <option value="portugues">Português</option>
+            <option value="ingles">Inglês</option>
+            <option value="geografia">Geografia</option>
+            <option value="historia">História</option>
+        </select>
+        <select id="prof-dificuldade">
+            <option value="facil">Fácil</option>
+            <option value="medio">Médio</option>
+            <option value="dificil">Difícil</option>
+        </select>
+        <input type="text" id="prof-question" placeholder="Digite a questão">
+        <input type="text" id="prof-answer" placeholder="Resposta correta">
+        <button type="submit">Adicionar Atividade</button>
+    </form>
+    <button id="prof-ai-btn">Pedir sugestão à IA</button>
+    <div id="prof-ai-response"></div>
+`;
+document.getElementById('main-app').appendChild(professorSection);
+tabSections.professor = document.getElementById('professor-section');
+
+document.getElementById('prof-create-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const materia = document.getElementById('prof-materia').value;
+    const dificuldade = document.getElementById('prof-dificuldade').value;
+    const question = document.getElementById('prof-question').value.trim();
+    const answer = document.getElementById('prof-answer').value.trim();
+    if (!question || !answer) {
+        alert('Por favor, preencha a questão e a resposta.');
+        return;
+    }
+    // Aqui você pode adicionar a lógica para salvar a nova atividade criada pelo professor
+    alert(`Atividade criada em ${materia} (${dificuldade}): ${question} - Resposta: ${answer}`);
+    document.getElementById('prof-question').value = '';
+    document.getElementById('prof-answer').value = '';
+});
+
+document.getElementById('prof-ai-btn').addEventListener('click', function () {
+    const question = document.getElementById('prof-question').value.trim();
+    if (!question) {
+        document.getElementById('prof-ai-response').textContent = 'Por favor, digite sua dúvida.';
+        return;
+    }
+    document.getElementById('prof-ai-response').textContent = 'Gerando resposta...';
+    setTimeout(() => {
+        document.getElementById('prof-ai-response').innerHTML = gerarRespostaSimulada(question);
+    }, 1200);
+});
+
+function ajustarDificuldade(acertou) {
+    const ordem = ['facil', 'medio', 'dificil'];
+    let idx = ordem.indexOf(dificuldade);
+    if (acertou && idx < ordem.length - 1) idx++;
+    if (!acertou && idx > 0) idx--;
+    dificuldade = ordem[idx];
+    diffBtns.forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-diff-' + ordem[idx]).classList.add('active');
+}
+
+// Lógica para adicionar vídeo (deixe isso fora do login, para rodar sempre)
+document.getElementById('add-video-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const url = document.getElementById('video-url').value.trim();
+    const title = document.getElementById('video-title').value.trim();
+    const feedback = document.getElementById('add-video-feedback');
+    const videoList = document.getElementById('video-list');
+
+    // Extrai o ID do vídeo do YouTube
+    const match = url.match(/(?:youtube\.com\/.*v=|youtu\.be\/)([\w-]+)/);
+    if (!match) {
+        feedback.textContent = 'URL inválida. Use um link do YouTube.';
+        return;
+    }
+    const videoId = match[1];
+
+    // Cria o iframe e adiciona à lista
+    const iframe = document.createElement('iframe');
+    iframe.width = 320;
+    iframe.height = 180;
+    iframe.src = `https://www.youtube.com/embed/${videoId}`;
+    iframe.title = title;
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    videoList.appendChild(iframe);
+
+    feedback.textContent = 'Vídeo adicionado com sucesso!';
+    document.getElementById('video-url').value = '';
+    document.getElementById('video-title').value = '';
+});
+
+const showAddVideoBtn = document.getElementById('show-add-video-btn');
+const addVideoArea = document.getElementById('add-video-area');
+
+// Após login do professor
+if (type === 'professor') {
+    showAddVideoBtn.style.display = '';
+    addVideoArea.style.display = 'none';
+} else {
+    showAddVideoBtn.style.display = 'none';
+    addVideoArea.style.display = 'none';
+}
+
+// Ao clicar na aba de vídeos
+navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        showTab(tab);
+
+        if (tab === 'videos') {
+            if (currentUser && currentUser.type === 'professor') {
+                showAddVideoBtn.style.display = '';
+                addVideoArea.style.display = 'none';
+            } else {
+                showAddVideoBtn.style.display = 'none';
+                addVideoArea.style.display = 'none';
+            }
+        }
+    });
+});
+
+// Ao clicar no botão "Adicionar novo vídeo"
+showAddVideoBtn.addEventListener('click', function () {
+    addVideoArea.style.display = '';
+    showAddVideoBtn.style.display = 'none';
+});
