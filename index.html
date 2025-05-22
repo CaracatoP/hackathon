@@ -24,18 +24,21 @@
             </div>
             <h2>Bem-vindo ao EducaAI</h2>
             <form id="login-form" autocomplete="off">
-                <input type="email" id="email" placeholder="Email" required>
+                <input type="email" id="email" placeholder="Email" required
+                    aria-label="Digite seu email">
                 <input type="password" id="password" placeholder="Senha"
-                    required>
-                <select id="login-type" required>
+                    required aria-label="Digite sua senha">
+                <select id="login-type" required
+                    aria-label="Selecione o tipo de usuário">
                     <option value="aluno">Aluno</option>
                     <option value="professor">Professor</option>
                 </select>
-                <button type="submit">Entrar</button>
+                <button type="submit"
+                    aria-label="Entrar no sistema">Entrar</button>
                 <button type="button" id="forgot-password-btn"
                     class="link-btn">Esqueceu sua senha?</button>
             </form>
-            <p id="login-error" class="error"></p>
+            <p id="login-error" class="error" aria-live="polite"></p>
         </div>
 
         <!-- Tela de saudação centralizada -->
@@ -65,14 +68,22 @@
                     aria-label="Abrir menu">&#9776;</button>
                 <nav id="main-nav">
                     <ul class="main-menu" id="main-menu">
-                        <li><button class="nav-btn" data-tab="profile">Perfil</button></li>
+                        <li><button class="nav-btn"
+                                data-tab="profile">Perfil</button></li>
                         <!-- Só mostra para aluno -->
-                        <li><button class="nav-btn" data-tab="activities" id="activities-tab-btn">Atividades</button></li>
-                        <li><button class="nav-btn" data-tab="ai" id="ai-tab-btn">Assistente IA</button></li>
-                        <li><button class="nav-btn" data-tab="leaderboard">Ranking</button></li>
-                        <li><button class="nav-btn" data-tab="videos">Vídeos</button></li>
+                        <li><button class="nav-btn" data-tab="activities"
+                                id="activities-tab-btn">Atividades</button></li>
+                        <li><button class="nav-btn" data-tab="ai"
+                                id="ai-tab-btn">Assistente IA</button></li>
+                        <li><button class="nav-btn"
+                                data-tab="leaderboard">Ranking</button></li>
+                        <li><button class="nav-btn"
+                                data-tab="videos">Vídeos</button></li>
                         <!-- Botão só para professor -->
-                        <li><button class="nav-btn" data-tab="professor" id="professor-tab-btn" style="display:none;">Criar Atividades</button></li>
+                        <li><button class="nav-btn" data-tab="professor"
+                                id="professor-tab-btn"
+                                style="display:none;">Criar
+                                Atividades</button></li>
                         <li><button id="logout-btn">Sair</button></li>
                     </ul>
                 </nav>
@@ -83,24 +94,45 @@
                 <section id="profile-section" class="tab-section">
                     <h2>Perfil</h2>
                     <ul id="profile-info">
-                        <li><strong>Nome:</strong> <span id="profile-name">Visitante</span></li>
-                        <li><strong>Pontos:</strong> <span id="profile-points">0</span></li>
-                        <li><strong>Nível:</strong> <span id="profile-level">1</span></li>
-                        <li><strong>Tipo:</strong> <span id="profile-type">Aluno</span></li>
+                        <li><strong>Nome:</strong> <span
+                                id="profile-name">Visitante</span></li>
+                        <li><strong>Pontos:</strong> <span
+                                id="profile-points">0</span></li>
+                        <li><strong>Nível:</strong> <span
+                                id="profile-level">1</span></li>
+                        <li><strong>Tipo:</strong> <span
+                                id="profile-type">Aluno</span></li>
                     </ul>
-                    <div id="historico-desempenho" style="margin-top:28px; display:none;">
-                        <h3 style="color:#225a99; margin-bottom:14px; text-align:center;">Histórico de Erros e Acertos</h3>
+                    <div id="historico-desempenho"
+                        style="margin-top:28px; display:none;">
+                        <h3
+                            style="color:#225a99; margin-bottom:14px; text-align:center;">Histórico
+                            de Erros e Acertos</h3>
                         <div style="overflow-x:auto;">
-                            <table id="tabela-historico" style="width:100%; border-collapse:collapse; background:#f7fafc; border-radius:10px; box-shadow:0 2px 8px #00973911;">
+                            <table id="tabela-historico"
+                                style="width:100%; border-collapse:collapse; background:#f7fafc; border-radius:10px; box-shadow:0 2px 8px #00973911;">
                                 <thead>
                                     <tr style="background:#e6f2ff;">
-                                        <th style="padding:8px 4px; border-radius:8px 0 0 8px; text-align:left;">Matéria</th>
-                                        <th style="padding:8px 4px;">Fácil<br><span style='color:#38a169;'>✔</span></th>
-                                        <th style="padding:8px 4px;">Fácil<br><span style='color:#e53e3e;'>✘</span></th>
-                                        <th style="padding:8px 4px;">Médio<br><span style='color:#38a169;'>✔</span></th>
-                                        <th style="padding:8px 4px;">Médio<br><span style='color:#e53e3e;'>✘</span></th>
-                                        <th style="padding:8px 4px;">Difícil<br><span style='color:#38a169;'>✔</span></th>
-                                        <th style="padding:8px 4px; border-radius:0 8px 8px 0;">Difícil<br><span style='color:#e53e3e;'>✘</span></th>
+                                        <th
+                                            style="padding:8px 4px; border-radius:8px 0 0 8px; text-align:left;">Disciplina</th>
+                                        <th
+                                            style="padding:8px 4px;">Fácil<br><span
+                                                style='color:#38a169;'>✔</span></th>
+                                        <th
+                                            style="padding:8px 4px;">Fácil<br><span
+                                                style='color:#e53e3e;'>✘</span></th>
+                                        <th
+                                            style="padding:8px 4px;">Médio<br><span
+                                                style='color:#38a169;'>✔</span></th>
+                                        <th
+                                            style="padding:8px 4px;">Médio<br><span
+                                                style='color:#e53e3e;'>✘</span></th>
+                                        <th
+                                            style="padding:8px 4px;">Difícil<br><span
+                                                style='color:#38a169;'>✔</span></th>
+                                        <th
+                                            style="padding:8px 4px; border-radius:0 8px 8px 0;">Difícil<br><span
+                                                style='color:#e53e3e;'>✘</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -109,18 +141,38 @@
                             </table>
                         </div>
                     </div>
+                    <div id="accessibility-features"
+                        style="margin-top: 28px; border-top: 1px solid #bcd0ee; padding-top: 18px; display: none;">
+                        <h3
+                            style="color:#225a99; margin-bottom:14px; text-align:center;">Acessibilidade</h3>
+                        <div style="margin-bottom:10px;">
+                            <button id="toggle-tts-btn" aria-pressed="false"
+                                aria-label="Ativar ou desativar leitura em voz">🔊
+                                Leitura em voz</button>
+                        </div>
+                        <!-- Novo botão e área de transcrição -->
+                        <button id="show-transcript-btn"
+                            aria-label="Mostrar transcrição da pergunta">📝 Ver
+                            transcrição</button>
+                        <div id="transcript-area"
+                            style="display:none; margin-top:8px; color:#225a99;"></div>
+                    </div>
                 </section>
                 <section id="activity-section" class="tab-section">
                     <h2>Atividades</h2>
                     <div id="difficulty-li">
                         <strong>Dificuldade:</strong>
                         <div class="difficulty-group">
-                            <button class="difficulty-btn active" data-diff="facil" id="btn-diff-facil">Fácil</button>
-                            <button class="difficulty-btn" data-diff="medio" id="btn-diff-medio">Médio</button>
-                            <button class="difficulty-btn" data-diff="dificil" id="btn-diff-dificil">Difícil</button>
+                            <button class="difficulty-btn active"
+                                data-diff="facil"
+                                id="btn-diff-facil">Fácil</button>
+                            <button class="difficulty-btn" data-diff="medio"
+                                id="btn-diff-medio">Médio</button>
+                            <button class="difficulty-btn" data-diff="dificil"
+                                id="btn-diff-dificil">Difícil</button>
                         </div>
                     </div>
-                    <label for="subject-select">Matéria:</label>
+                    <label for="subject-select">Disciplina:</label>
                     <select id="subject-select">
                         <option value="matematica">Matemática</option>
                         <option value="portugues">Português</option>
@@ -137,9 +189,13 @@
                         <div id="activity-tip"></div>
                     </div>
                     <button id="get-activity-btn">Nova Atividade</button>
-                    <button id="ask-weakness-btn" type="button">Pedir à IA: Onde mais erro?</button>
-                    <div id="weakness-response" style="margin-top:10px; color:#225a99; font-weight:600; min-height:24px;"></div>
-                    <div id="points-display">Pontos: <span id="points">0</span></div>
+                    <button id="ask-weakness-btn" type="button">Pergunte a IA:
+                        "em qual disciplina tenho mais erros?"</button>
+                    <div id="weakness-response"
+                        style="margin-top:10px; color:#225a99; font-weight:600; min-height:24px;"></div>
+                    <div id="points-display">Pontos: <span
+                            id="points">0</span></div>
+
                 </section>
                 <section id="leaderboard-section" class="tab-section">
                     <h2>Ranking</h2>
@@ -155,34 +211,62 @@
                 <section id="videos-section" class="tab-section">
                     <h2>Vídeos Educacionais</h2>
                     <div class="video-list" id="video-list">
-                        <iframe src="https://www.youtube.com/embed/j6dy4VrsFvA" title="Matemática"></iframe>
-                        <iframe src="https://www.youtube.com/embed/9tW83jfWX7U" title="Português"></iframe>
+                        <div class="video-item">
+                            <iframe
+                                src="https://www.youtube.com/embed/j6dy4VrsFvA"
+                                title="Matemática"
+                                aria-label="Vídeo de Matemática com legendas disponíveis"></iframe>
+                            <div class="video-desc">Matemática - vídeo com
+                                legendas automáticas do YouTube.</div>
+                        </div>
+                        <div class="video-item">
+                            <iframe
+                                src="https://www.youtube.com/embed/9tW83jfWX7U"
+                                title="Português"
+                                aria-label="Vídeo de Português com legendas disponíveis"></iframe>
+                            <div class="video-desc">Português - vídeo com
+                                legendas automáticas do YouTube.</div>
+                        </div>
                         <!-- Adicione mais vídeos conforme desejar -->
                     </div>
-                    <button id="show-add-video-btn" style="display:none; margin:18px 0 8px 0;">Adicionar novo vídeo</button>
-                    <div id="add-video-area" style="display:none; margin-top:18px;">
-                        <form id="add-video-form" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                            <input type="url" id="video-url" placeholder="URL do vídeo do YouTube" required style="flex:2; min-width:220px;">
-                            <input type="text" id="video-title" placeholder="Título" required style="flex:1; min-width:120px;">
-                            <button type="submit" id="add-video-btn">Adicionar Vídeo</button>
+                    <button id="show-add-video-btn"
+                        style="display:none; margin:18px 0 8px 0;">Adicionar
+                        novo vídeo</button>
+                    <div id="add-video-area"
+                        style="display:none; margin-top:18px;">
+                        <form id="add-video-form"
+                            style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                            <input type="url" id="video-url"
+                                placeholder="URL do vídeo do YouTube" required
+                                style="flex:2; min-width:220px;">
+                            <input type="text" id="video-title"
+                                placeholder="Título" required
+                                style="flex:1; min-width:120px;">
+                            <button type="submit" id="add-video-btn">Adicionar
+                                Vídeo</button>
                         </form>
-                        <div id="add-video-feedback" style="margin-top:8px; color:#009739; font-weight:600;"></div>
+                        <div id="add-video-feedback"
+                            style="margin-top:8px; color:#009739; font-weight:600;"></div>
                     </div>
                 </section>
                 <section id="config-section" class="tab-section">
                     <h2>Configurações de Acessibilidade</h2>
                     <form id="config-form">
-                        <label><input type="checkbox" id="tdah"> TDAH</label><br>
-                        <label><input type="checkbox" id="ansiedade"> Ansiedade</label><br>
-                        <label><input type="checkbox" id="daltonismo"> Daltonismo</label><br>
+                        <label><input type="checkbox" id="tdah">
+                            TDAH</label><br>
+                        <label><input type="checkbox" id="ansiedade">
+                            Ansiedade</label><br>
+                        <label><input type="checkbox" id="daltonismo">
+                            Daltonismo</label><br>
                         <button type="submit">Salvar Preferências</button>
                     </form>
                     <div id="config-feedback"></div>
                 </section>
-                <section id="professor-section" class="tab-section" style="display:none;">
+                <section id="professor-section" class="tab-section"
+                    style="display:none;">
                     <h2>Criar Atividade</h2>
                     <form id="prof-create-form">
-                        <label for="prof-materia">Matéria:</label>
+                        <label for="prof-materia">Disciplina:</label>
                         <select id="prof-materia" class="prof-input">
                             <option value="matematica">Matemática</option>
                             <option value="portugues">Português</option>
@@ -196,11 +280,14 @@
                             <option value="medio">Médio</option>
                             <option value="dificil">Difícil</option>
                         </select>
-                        <input type="text" id="prof-question" placeholder="Digite a questão">
-                        <input type="text" id="prof-answer" placeholder="Resposta correta">
+                        <input type="text" id="prof-question"
+                            placeholder="Digite a questão">
+                        <input type="text" id="prof-answer"
+                            placeholder="Resposta correta">
                         <div class="prof-btn-group">
                             <button type="submit">Adicionar Atividade</button>
-                            <button type="button" id="prof-ai-btn">Pedir sugestão à IA</button>
+                            <button type="button" id="prof-ai-btn">Pedir
+                                sugestão à IA</button>
                         </div>
                     </form>
                     <div id="prof-ai-response"></div>
