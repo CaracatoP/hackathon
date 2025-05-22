@@ -19,6 +19,12 @@ const profileName = document.getElementById('profile-name');
 const profilePoints = document.getElementById('profile-points');
 const profileLevel = document.getElementById('profile-level');
 const profileType = document.getElementById('profile-type');
+// Elementos de acessibilidade e histórico no perfil (NOVAS REFERÊNCIAS)
+const ttsBtn = document.getElementById('toggle-tts-btn'); // Já deve existir
+const transcriptBtn = document.getElementById('show-transcript-btn'); // Já deve existir
+const transcriptArea = document.getElementById('transcript-area'); // Já deve existir
+const historicoDesempenhoDiv = document.getElementById('historico-desempenho'); // Já deve existir
+const accessibilityFeaturesDiv = document.getElementById('accessibility-features'); // NOVA REFERÊNCIA
 
 // Navegação
 const navBtns = document.querySelectorAll('.nav-btn');
@@ -225,6 +231,7 @@ function salvarLeaderboard(nome, pontos) {
     atualizarLeaderboard();
 }
 
+// Função para mostrar/esconder abas e elementos específicos (MODIFICADA)
 function showTab(tab) {
     Object.values(tabSections).forEach(sec => sec.classList.remove('active'));
     navBtns.forEach(btn => btn.classList.remove('active'));
@@ -232,6 +239,33 @@ function showTab(tab) {
     navBtns.forEach(btn => {
         if (btn.dataset.tab === tab) btn.classList.add('active');
     });
+
+    // Lógica para mostrar/esconder elementos com base no tipo de usuário e aba
+    const isAluno = currentUser && currentUser.type === 'aluno';
+    const isProfessor = currentUser && currentUser.type === 'professor';
+
+    // Esconde elementos específicos por padrão (MODIFICADO para incluir acessibilidade)
+    if (historicoDesempenhoDiv) historicoDesempenhoDiv.style.display = 'none';
+    if (accessibilityFeaturesDiv) accessibilityFeaturesDiv.style.display = 'none'; // Oculta a div de acessibilidade por padrão
+
+
+    // Mostra elementos específicos se for aluno e na aba de perfil (MODIFICADO)
+    if (tab === 'profile' && isAluno) {
+        if (historicoDesempenhoDiv) historicoDesempenhoDiv.style.display = '';
+        if (accessibilityFeaturesDiv) accessibilityFeaturesDiv.style.display = ''; // Mostra a div de acessibilidade apenas para aluno no perfil
+        renderizarHistorico(); // Renderiza o histórico ao mostrar o perfil do aluno
+    }
+
+    // Lógica para o botão de adicionar vídeo (apenas professor na aba de vídeos) (Mantenha o que já existe)
+    const showAddVideoBtn = document.getElementById('show-add-video-btn');
+    const addVideoArea = document.getElementById('add-video-area');
+    if (tab === 'videos' && isProfessor) {
+        if (showAddVideoBtn) showAddVideoBtn.style.display = 'block';
+        if (addVideoArea) addVideoArea.style.display = 'none';
+    } else {
+        if (showAddVideoBtn) showAddVideoBtn.style.display = 'none';
+        if (addVideoArea) addVideoArea.style.display = 'none';
+    }
 }
 
 // Login
@@ -305,13 +339,27 @@ loginForm.addEventListener('submit', function (e) {
 });
 
 // Logout
+// Listener do logoutBtn (MODIFICADO)
 logoutBtn.addEventListener('click', function () {
+    // Salva o estado atual do usuário antes de deslogar (Mantenha se já existir)
+    if (currentUser && currentUser.email) {
+        localStorage.setItem('pontos_' + currentUser.email, pontos);
+        localStorage.setItem('historicoDesempenho_' + currentUser.email, JSON.stringify(historicoDesempenho));
+        localStorage.setItem('errosPorMateria_' + currentUser.email, JSON.stringify(errosPorMateria));
+    }
     currentUser = null;
+    pontos = 0;
+    nivel = 1;
+    historicoDesempenho = {}; // Reseta o histórico (Mantenha se já existir)
+    errosPorMateria = { matematica: 0, portugues: 0, ingles: 0, geografia: 0, historia: 0 }; // Reseta os erros (Mantenha se já existir)
     mainApp.style.display = 'none';
     loginContainer.style.display = 'block';
     loginForm.reset();
     document.getElementById('email').value = '';
     document.getElementById('password').value = '';
+    // Esconde elementos específicos ao deslogar (ADICIONADO)
+    if (historicoDesempenhoDiv) historicoDesempenhoDiv.style.display = 'none';
+    if (accessibilityFeaturesDiv) accessibilityFeaturesDiv.style.display = 'none'; // Oculta a div de acessibilidade ao deslogar
 });
 
 // Esqueceu senha
@@ -347,7 +395,7 @@ function novaAtividade() {
     const materia = subjectSelect.value;
     const lista = getPerguntasPorDificuldade(materia, dificuldade);
     if (!lista.length) {
-        activitiesList.textContent = 'Sem perguntas cadastradas para esta matéria/dificuldade.';
+        activitiesList.textContent = 'Sem perguntas cadastradas para esta Disciplina/dificuldade.';
         answerSection.style.display = 'none';
         return;
     }
@@ -359,6 +407,58 @@ function novaAtividade() {
     answerFeedback.textContent = '';
     answerFeedback.className = '';
     document.getElementById('activity-tip').textContent = '';
+    if (transcriptArea) {
+        transcriptArea.textContent = '';
+        transcriptArea.style.display = 'none';
+    }
+
+    // Leitura automática se ativado (MANTENHA ESTA LINHA)
+    lerTexto(atividadeAtual.pergunta);
+
+    // Leitura em voz (Text-to-Speech)
+    // Leitura em voz (Text-to-Speech) - Listener adicionado uma vez (VERIFIQUE A LOCALIZAÇÃO)
+    let ttsAtivo = false; // Variável global
+    // Este listener DEVE estar fora da função novaAtividade()
+    if (ttsBtn) {
+        ttsBtn.addEventListener('click', function () {
+            ttsAtivo = !ttsAtivo;
+            ttsBtn.setAttribute('aria-pressed', ttsAtivo);
+            ttsBtn.textContent = ttsAtivo ? '🔊 Leitura em voz: Ativada' : '🔊 Leitura em voz';
+        });
+    }
+
+    // Função para ler texto em voz alta (Mantenha esta função)
+    function lerTexto(texto) {
+        if (ttsAtivo && 'speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(texto);
+            utter.lang = 'pt-BR';
+            window.speechSynthesis.speak(utter);
+        }
+    }
+
+    // Listener do botão de transcrição (VERIFIQUE A LOCALIZAÇÃO)
+    // Este listener DEVE estar fora da função novaAtividade()
+    if (transcriptBtn && transcriptArea) {
+        transcriptBtn.addEventListener('click', function () {
+            if (atividadeAtual) {
+                transcriptArea.textContent = atividadeAtual.pergunta;
+                transcriptArea.style.display = transcriptArea.style.display === 'none' ? '' : 'none';
+            }
+        });
+    }
+
+    // Função para ler texto em voz alta
+    function lerTexto(texto) {
+        if (ttsAtivo && 'speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(texto);
+            utter.lang = 'pt-BR';
+            window.speechSynthesis.speak(utter);
+        }
+    }
+
+    lerTexto(atividadeAtual.pergunta); // Leitura automática se ativado
 }
 
 getActivityBtn.addEventListener('click', novaAtividade);
@@ -415,7 +515,7 @@ document.getElementById('ask-weakness-btn').addEventListener('click', function (
         }
     }
     if (maior === 0) {
-        weaknessDiv.innerHTML = 'Você ainda não errou nenhuma matéria!';
+        weaknessDiv.innerHTML = 'Você ainda não errou nenhuma Disciplina!';
     } else {
         weaknessDiv.innerHTML = `Você está errando mais em <b>${materia.charAt(0).toUpperCase() + materia.slice(1)}</b>. Que tal focar nela?`;
     }
@@ -602,7 +702,7 @@ function ajustarDificuldade(acertou) {
 }
 
 // Lógica para adicionar vídeo (deixe isso fora do login, para rodar sempre)
-document.getElementById('add-video-form').addEventListener('submit', function(e) {
+document.getElementById('add-video-form').addEventListener('submit', function (e) {
     e.preventDefault();
     const url = document.getElementById('video-url').value.trim();
     const title = document.getElementById('video-title').value.trim();
@@ -651,13 +751,7 @@ setTimeout(() => {
     atualizarBotaoVideo();
     // Se a aba de vídeos estiver ativa após login, garanta que o botão aparece:
     if (tabSections.videos.classList.contains('active')) {
-        if (currentUser && currentUser.type === 'professor') {
-            showAddVideoBtn.style.display = 'block';
-            addVideoArea.style.display = 'none';
-        } else {
-            showAddVideoBtn.style.display = 'none';
-            addVideoArea.style.display = 'none';
-        }
+        atualizarBotaoVideo();
     }
 }, 2200);
 
@@ -668,13 +762,7 @@ navBtns.forEach(btn => {
         showTab(tab);
 
         if (tab === 'videos') {
-            if (currentUser && currentUser.type === 'professor') {
-                showAddVideoBtn.style.display = 'block';
-                addVideoArea.style.display = 'none';
-            } else {
-                showAddVideoBtn.style.display = 'none';
-                addVideoArea.style.display = 'none';
-            }
+            atualizarBotaoVideo();
         }
     });
 });
@@ -716,12 +804,12 @@ function renderizarHistorico() {
         tr.innerHTML = `
             <td style="padding:7px 4px; font-weight:600; color:#225a99;">${nomes[materia]}</td>
             ${dificuldades.map(dif => {
-                const stats = (historicoDesempenho[materia] && historicoDesempenho[materia][dif]) || { acertos: 0, erros: 0 };
-                return `
+            const stats = (historicoDesempenho[materia] && historicoDesempenho[materia][dif]) || { acertos: 0, erros: 0 };
+            return `
                     <td style="padding:7px 4px; color:#38a169; text-align:center;">${stats.acertos}</td>
                     <td style="padding:7px 4px; color:#e53e3e; text-align:center;">${stats.erros}</td>
                 `;
-            }).join('')}
+        }).join('')}
         `;
         tbody.appendChild(tr);
     });
@@ -729,7 +817,7 @@ function renderizarHistorico() {
 
 // Atualize o histórico ao mostrar o perfil (só para alunos)
 const originalShowTab = showTab;
-showTab = function(tab) {
+showTab = function (tab) {
     originalShowTab(tab);
     if (tab === 'profile') {
         // Mostra histórico só se for aluno
@@ -741,3 +829,12 @@ showTab = function(tab) {
 
 // Atualize o histórico ao iniciar
 renderizarHistorico();
+
+if (transcriptBtn && transcriptArea) {
+    transcriptBtn.addEventListener('click', function () {
+        if (atividadeAtual) {
+            transcriptArea.textContent = atividadeAtual.pergunta;
+            transcriptArea.style.display = transcriptArea.style.display === 'none' ? '' : 'none';
+        }
+    });
+}
