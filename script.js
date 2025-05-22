@@ -49,6 +49,10 @@ const aiResponse = document.getElementById('ai-response');
 const menuToggle = document.getElementById('menu-toggle');
 const mainMenu = document.getElementById('main-menu');
 
+// Tela de boas-vindas
+const welcomeScreen = document.getElementById('welcome-screen');
+const welcomeMsg = document.getElementById('welcome-msg');
+
 // Estado global
 let currentUser = null;
 let pontos = 0;
@@ -57,57 +61,86 @@ let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 let atividadeAtual = null;
 let dificuldade = 'facil';
 
-// Atividades por matéria e dificuldade
+// Atividades por matéria e dificuldade (todas com 3 perguntas, mais desafiadoras)
 const perguntasFaceis = {
     matematica: [
-        { pergunta: 'Quanto é 2 + 2?', resposta: '4', dica: 'Soma simples.' }
+        { pergunta: 'Quanto é 7 + 8?', resposta: '15', dica: 'Soma simples.' },
+        { pergunta: 'Quanto é 5 x 3?', resposta: '15', dica: 'Multiplicação básica.' },
+        { pergunta: 'Qual é o dobro de 9?', resposta: '18', dica: 'Multiplique por 2.' }
     ],
     portugues: [
-        { pergunta: 'Plural de "flor"?', resposta: 'flores', dica: 'Adicione "es".' }
+        { pergunta: 'Qual o plural de "animal"?', resposta: 'animais', dica: 'Termina com "ais".' },
+        { pergunta: 'Complete: "Ele ___ feliz."', resposta: 'está', dica: 'Verbo de estado.' },
+        { pergunta: 'Qual o feminino de "ator"?', resposta: 'atriz', dica: 'Troque "or" por "riz".' }
     ],
     ingles: [
-        { pergunta: 'Traduza: "cat"', resposta: 'gato', dica: 'Animal doméstico.' }
+        { pergunta: 'Traduza: "dog"', resposta: 'cachorro', dica: 'Animal doméstico.' },
+        { pergunta: 'Como se diz "livro" em inglês?', resposta: 'book', dica: 'Começa com "b".' },
+        { pergunta: 'Traduza: "school"', resposta: 'escola', dica: 'Onde você estuda.' }
     ],
     geografia: [
-        { pergunta: 'Capital de SP?', resposta: 'são paulo', dica: 'Mesmo nome do estado.' }
+        { pergunta: 'Qual é o maior país da América do Sul?', resposta: 'brasil', dica: 'Onde você mora.' },
+        { pergunta: 'Qual oceano banha o litoral brasileiro?', resposta: 'atlântico', dica: 'Começa com "a".' },
+        { pergunta: 'Capital do estado do Rio de Janeiro?', resposta: 'rio de janeiro', dica: 'Mesmo nome do estado.' }
     ],
     historia: [
-        { pergunta: 'Ano da independência do Brasil?', resposta: '1822', dica: 'Século XIX.' }
+        { pergunta: 'Quem foi o primeiro presidente do Brasil?', resposta: 'marechal deodoro', dica: 'Marechal.' },
+        { pergunta: 'Ano da Proclamação da República?', resposta: '1889', dica: 'Século XIX.' },
+        { pergunta: 'Quem assinou a Lei Áurea?', resposta: 'princesa isabel', dica: 'Foi uma princesa.' }
     ]
 };
 const perguntasMedias = {
     matematica: [
-        { pergunta: 'Quanto é 12 x 7?', resposta: '84', dica: 'Multiplicação.' }
+        { pergunta: 'Quanto é 12 x 7?', resposta: '84', dica: 'Multiplicação.' },
+        { pergunta: 'Qual é a metade de 36?', resposta: '18', dica: 'Divida por 2.' },
+        { pergunta: 'Quanto é 45 dividido por 5?', resposta: '9', dica: 'Divisão simples.' }
     ],
     portugues: [
-        { pergunta: 'Qual o antônimo de "feliz"?', resposta: 'triste', dica: 'Sentimento oposto.' }
+        { pergunta: 'Qual o antônimo de "feliz"?', resposta: 'triste', dica: 'Sentimento oposto.' },
+        { pergunta: 'O que é um advérbio?', resposta: 'palavra que modifica o verbo', dica: 'Relaciona-se ao verbo.' },
+        { pergunta: 'Qual é o aumentativo de "casa"?', resposta: 'casarão', dica: 'Termina com "ão".' }
     ],
     ingles: [
-        { pergunta: 'Traduza: "window"', resposta: 'janela', dica: 'Presente em toda casa.' }
+        { pergunta: 'Traduza: "window"', resposta: 'janela', dica: 'Presente em toda casa.' },
+        { pergunta: 'Como se diz "amigo" em inglês?', resposta: 'friend', dica: 'Começa com "f".' },
+        { pergunta: 'Traduza: "teacher"', resposta: 'professor', dica: 'Pessoa que ensina.' }
     ],
     geografia: [
-        { pergunta: 'Qual continente é o Brasil?', resposta: 'américa do sul', dica: 'Fica ao sul.' }
+        { pergunta: 'Qual continente é o Brasil?', resposta: 'américa do sul', dica: 'Fica ao sul.' },
+        { pergunta: 'Qual é o maior oceano do mundo?', resposta: 'pacífico', dica: 'Começa com "p".' },
+        { pergunta: 'Qual país faz fronteira com o Brasil ao sul?', resposta: 'uruguai', dica: 'Famoso pelo churrasco.' }
     ],
     historia: [
-        { pergunta: 'Quem descobriu o Brasil?', resposta: 'pedro álvares cabral', dica: 'Navegador português.' }
+        { pergunta: 'Quem descobriu o Brasil?', resposta: 'pedro álvares cabral', dica: 'Navegador português.' },
+        { pergunta: 'Em que ano terminou a Segunda Guerra Mundial?', resposta: '1945', dica: 'Década de 40.' },
+        { pergunta: 'Quem foi Tiradentes?', resposta: 'líder da inconfidência mineira', dica: 'Movimento de Minas Gerais.' }
     ]
 };
 const perguntasDificeis = {
     matematica: [
         { pergunta: 'Qual é a raiz quadrada de 144?', resposta: '12', dica: 'Multiplicação reversa.' },
-        { pergunta: 'Resolva: (5² + 3²) x 2', resposta: '68', dica: 'Lembre-se da ordem das operações.' }
+        { pergunta: 'Resolva: (5² + 3²) x 2', resposta: '68', dica: 'Lembre-se da ordem das operações.' },
+        { pergunta: 'Quanto é 2³ + 4²?', resposta: '24', dica: 'Potenciação.' }
     ],
     portugues: [
-        { pergunta: 'O que é uma oração subordinada?', resposta: 'frase dependente', dica: 'Depende de outra oração.' }
+        { pergunta: 'O que é uma oração subordinada?', resposta: 'frase dependente', dica: 'Depende de outra oração.' },
+        { pergunta: 'O que é um predicativo do sujeito?', resposta: 'termo que caracteriza o sujeito', dica: 'Caracteriza o sujeito.' },
+        { pergunta: 'O que é uma metáfora?', resposta: 'figura de linguagem', dica: 'Comparação implícita.' }
     ],
     ingles: [
-        { pergunta: 'Traduza: "environment"', resposta: 'meio ambiente', dica: 'Palavra comum em sustentabilidade.' }
+        { pergunta: 'Traduza: "environment"', resposta: 'meio ambiente', dica: 'Palavra comum em sustentabilidade.' },
+        { pergunta: 'Traduza: "thought"', resposta: 'pensamento', dica: 'Vem do verbo "think".' },
+        { pergunta: 'Como se diz "desenvolvimento" em inglês?', resposta: 'development', dica: 'Começa com "d".' }
     ],
     geografia: [
-        { pergunta: 'Qual o maior deserto do mundo?', resposta: 'saara', dica: 'Fica na África.' }
+        { pergunta: 'Qual o maior deserto do mundo?', resposta: 'saara', dica: 'Fica na África.' },
+        { pergunta: 'Qual é o rio mais extenso do mundo?', resposta: 'nilo', dica: 'Fica na África.' },
+        { pergunta: 'Qual é a capital da Austrália?', resposta: 'camberra', dica: 'Não é Sydney.' }
     ],
     historia: [
-        { pergunta: 'Quem assinou a Lei Áurea?', resposta: 'princesa isabel', dica: 'Foi uma princesa.' }
+        { pergunta: 'Quem assinou a Lei Áurea?', resposta: 'princesa isabel', dica: 'Foi uma princesa.' },
+        { pergunta: 'O que foi a Revolução Francesa?', resposta: 'mudança política na frança', dica: 'Liberdade, igualdade, fraternidade.' },
+        { pergunta: 'Quem foi Dom Pedro II?', resposta: 'imperador do brasil', dica: 'Segundo imperador.' }
     ]
 };
 
@@ -115,6 +148,10 @@ const perguntasDificeis = {
 function atualizarPerfil() {
     profilePoints.textContent = pontos;
     profileLevel.textContent = nivel;
+    // Salva pontos do usuário logado no localStorage
+    if (currentUser && currentUser.email) {
+        localStorage.setItem('pontos_' + currentUser.email, pontos);
+    }
 }
 
 function atualizarLeaderboard() {
@@ -122,17 +159,25 @@ function atualizarLeaderboard() {
     leaderboard.sort((a, b) => b.pontos - a.pontos);
     leaderboard.slice(0, 10).forEach((aluno, i) => {
         const li = document.createElement('li');
-        li.innerHTML = `<span class="rank">${i+1}º</span> <span class="nome">${aluno.nome}</span> <span class="pts">${aluno.pontos} pts</span>`;
+        li.innerHTML = `<span class="rank">${i + 1}º</span> <span class="nome">${aluno.nome}</span> <span class="pts">${aluno.pontos} pts</span>`;
         leaderboardList.appendChild(li);
     });
 }
 
 function salvarLeaderboard(nome, pontos) {
-    const idx = leaderboard.findIndex(a => a.nome === nome);
-    if (idx >= 0) {
-        leaderboard[idx].pontos = pontos;
-    } else {
-        leaderboard.push({ nome, pontos });
+    // Salva pontos por usuário (nome ou email) e impede duplicidade
+    const userKey = currentUser && currentUser.email ? currentUser.email : nome;
+    let found = false;
+    leaderboard = leaderboard.map(entry => {
+        if (entry.userKey === userKey) {
+            found = true;
+            // Só atualiza se os pontos forem maiores
+            return { ...entry, nome, pontos: Math.max(entry.pontos, pontos), userKey };
+        }
+        return entry;
+    });
+    if (!found) {
+        leaderboard.push({ nome, pontos, userKey });
     }
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
     atualizarLeaderboard();
@@ -148,32 +193,39 @@ function showTab(tab) {
 }
 
 // Login
-loginForm.addEventListener('submit', function(e) {
+loginForm.addEventListener('submit', function (e) {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
     const type = document.getElementById('login-type').value;
     const user = users.find(u => u.email === email && u.password === password && u.type === type);
     if (user || type === 'aluno') {
-        currentUser = user || { name: 'Visitante', type: type };
+        currentUser = user || { name: 'Visitante', type: type, email: email };
         loginContainer.style.display = 'none';
-        mainApp.style.display = 'block';
-        userGreeting.textContent = `Olá, ${currentUser.name}! Pronto para aprender hoje?`;
-        loginError.textContent = '';
-        profileName.textContent = currentUser.name;
-        profileType.textContent = type.charAt(0).toUpperCase() + type.slice(1);
-        pontos = 0;
-        nivel = 1;
-        atualizarPerfil();
-        atualizarLeaderboard();
-        showTab('activities');
+        // Mostra tela de saudação centralizada
+        welcomeMsg.textContent = `Olá, ${currentUser.name}! Pronto para aprender hoje?`;
+        welcomeScreen.style.display = 'flex';
+        setTimeout(() => {
+            welcomeScreen.style.display = 'none';
+            mainApp.style.display = 'block';
+            loginError.textContent = '';
+            profileName.textContent = currentUser.name;
+            profileType.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+            // Carrega pontos salvos do usuário
+            const pontosSalvos = localStorage.getItem('pontos_' + email);
+            pontos = pontosSalvos ? parseInt(pontosSalvos, 10) : 0;
+            nivel = 1 + Math.floor(pontos / 100);
+            atualizarPerfil();
+            atualizarLeaderboard();
+            showTab('activities');
+        }, 2200);
     } else {
         loginError.textContent = 'Usuário ou senha inválidos.';
     }
 });
 
 // Logout
-logoutBtn.addEventListener('click', function() {
+logoutBtn.addEventListener('click', function () {
     currentUser = null;
     mainApp.style.display = 'none';
     loginContainer.style.display = 'block';
@@ -183,7 +235,7 @@ logoutBtn.addEventListener('click', function() {
 });
 
 // Esqueceu senha
-document.getElementById('forgot-password-btn').addEventListener('click', function() {
+document.getElementById('forgot-password-btn').addEventListener('click', function () {
     alert('Para redefinir sua senha, entre em contato com o suporte da escola.');
 });
 
@@ -232,7 +284,7 @@ function novaAtividade() {
 getActivityBtn.addEventListener('click', novaAtividade);
 subjectSelect.addEventListener('change', novaAtividade);
 
-submitAnswerBtn.addEventListener('click', function() {
+submitAnswerBtn.addEventListener('click', function () {
     if (!atividadeAtual) return;
     const resposta = activityAnswer.value.trim().toLowerCase();
     if (resposta === atividadeAtual.resposta) {
@@ -254,11 +306,41 @@ submitAnswerBtn.addEventListener('click', function() {
     }
 });
 
+// Adiciona botão de dica
+const hintBtn = document.createElement('button');
+hintBtn.id = 'show-hint-btn';
+hintBtn.textContent = 'Mostrar dica';
+hintBtn.type = 'button';
+hintBtn.style.marginTop = '6px';
+
+// Insere o botão de dica abaixo do botão de responder
+submitAnswerBtn.parentNode.insertBefore(hintBtn, submitAnswerBtn.nextSibling);
+
+// Evento do botão de dica
+hintBtn.addEventListener('click', function () {
+    if (atividadeAtual && atividadeAtual.dica) {
+        document.getElementById('activity-tip').textContent = `Dica: ${atividadeAtual.dica}`;
+    } else {
+        document.getElementById('activity-tip').textContent = 'Nenhuma dica disponível para esta pergunta.';
+    }
+});
+
+// Permitir enviar resposta com Enter no campo de resposta da atividade
+activityAnswer.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        submitAnswerBtn.click();
+    }
+});
+
 // Menu responsivo
-menuToggle.addEventListener('click', function() {
+menuToggle.addEventListener('click', function () {
     mainMenu.classList.toggle('open');
 });
-mainMenu.addEventListener('click', function(e) {
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 700) mainMenu.classList.remove('open');
+});
+mainMenu.addEventListener('click', function (e) {
     if (e.target.classList.contains('nav-btn') || e.target.id === 'logout-btn') {
         if (window.innerWidth <= 700) mainMenu.classList.remove('open');
     }
@@ -273,7 +355,7 @@ navBtns.forEach(btn => {
 });
 
 // IA Simulada
-askAiBtn.addEventListener('click', function() {
+askAiBtn.addEventListener('click', function () {
     const question = userQuestion.value.trim();
     if (!question) {
         aiResponse.textContent = 'Por favor, digite sua dúvida.';
