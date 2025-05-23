@@ -213,7 +213,10 @@ header {
     }
 }
 
+
 @media (max-width: 700px) {
+
+
     .main-menu {
         display: none;
         position: absolute;
@@ -224,10 +227,14 @@ header {
         border-radius: 0 0 12px 12px;
         box-shadow: 0 6px 32px rgba(0, 151, 57, 0.13);
         z-index: 100;
-        flex-direction: row;
+        /* Alterado para column */
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
         gap: 8px;
+        /* O gap agora adicionará espaço vertical */
         padding: 12px 0;
+        margin-top: 275px;
     }
 
     .main-menu.open {
@@ -240,6 +247,11 @@ header {
 
     header {
         position: relative;
+    }
+
+    /* Nova regra para ocultar o conteúdo principal quando o menu estiver aberto em mobile */
+    #main-app.menu-open-mobile main {
+        display: none;
     }
 }
 
@@ -1014,7 +1026,7 @@ header {
     font-size: 1em;
     font-weight: 600;
     margin: 0 8px 8px 0;
-    box-shadow: 0 6px 32px rgba(0,151,57,0.13);
+    box-shadow: 0 6px 32px rgba(0, 151, 57, 0.13);
     transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
     outline: none;
     display: inline-block;
